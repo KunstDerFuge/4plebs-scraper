@@ -1,5 +1,6 @@
 import json
 import requests
+import time
 
 api_url_base = "http://archive.4plebs.org/_/api/chan/thread/"
 
@@ -47,12 +48,16 @@ try:
                         archive[board] = {}
 
                     archive[board][thread] = response.json()[str(thread)]
+                    print('Waiting 12 seconds to comply with rate limiting...')
+                    time.sleep(12)
             else:
                 # Board
                 board = cleaned.replace(':', '')
         except Exception as e:
             print('Exception while scraping:')
-            print(e)
+            print(response.reason)
+            print('Waiting 12 seconds...')
+            time.sleep(12)
 
     # Write archive
     
