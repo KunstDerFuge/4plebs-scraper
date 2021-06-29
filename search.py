@@ -27,18 +27,24 @@ def search4plebs():
     posts = None
 
     while True:
-        print('Fetching results for page {}...'.format(page))
-        params['page'] = page
-        results = run_search(params, headers)
-        if 'error' in results:
+
+        try:
+            print('Fetching results for page {}...'.format(page))
+            params['page'] = page
+            results = run_search(params, headers)
+            if 'error' in results:
+                break
+            if not posts:
+                posts = results
+            else:
+                posts['0']['posts'].extend(results['0']['posts'])
+            page += 1
+            print('Waiting 12 seconds to comply with rate limiting...')
+            time.sleep(12)
+
+        except KeyboardInterrupt:
+            print('Cancelled, gathering results...')
             break
-        if not posts:
-            posts = results
-        else:
-            posts['0']['posts'].extend(results['0']['posts'])
-        page += 1
-        print('Waiting 12 seconds to comply with rate limiting...')
-        time.sleep(12)
     
     print('Search complete! \nWriting to {}...'.format(output))
 
